@@ -1,0 +1,302 @@
+###############
+# Bibliotecas #
+###############
+
+
+# install.packages("readxl")
+# install.packages("dplyr")
+# install.packages("ggplot2")
+library(readxl)
+library(dplyr)
+library(ggplot2)
+
+#######################
+# Importacao do Excel #
+#######################
+
+
+patients <- read_excel("UnB_INI_Planilha de trabalho para Stata_16NOV2017.xls",
+                       sheet = "patients-287-HGCC")
+# View(patients)
+# str(patients)
+
+demografia <- read_excel("UnB_INI_Planilha de trabalho para Stata_16NOV2017.xls",
+                       sheet = "Dados Demograficos-287-HGCC")
+# View(demografia)
+# str(demografia)
+
+habitos <- read_excel("UnB_INI_Planilha de trabalho para Stata_16NOV2017.xls",
+                      sheet = "Habitos de Vida-287-HGCC")
+# View(habitos)
+# str(habitos)
+
+caract_doenca <- read_excel("UnB_INI_Planilha de trabalho para Stata_16NOV2017.xls",
+                      sheet = "Caract. Doenca-287-HGCC")
+# View(caract_doenca)
+# str(caract_doenca)
+
+extra_articular <- read_excel("UnB_INI_Planilha de trabalho para Stata_16NOV2017.xls",
+                            sheet = "Manif Extra-Articular-287-HGCC")
+# View(extra_articular)
+# str(extra_articular)
+
+cirurgias <- read_excel("UnB_INI_Planilha de trabalho para Stata_16NOV2017.xls",
+                              sheet = "Cirurgias Ortopedicas-287-HGCC")
+# View(cirurgias)
+# str(cirurgias)
+
+infiltracao <- read_excel("UnB_INI_Planilha de trabalho para Stata_16NOV2017.xls",
+                        sheet = "Infiltracao-287-HGCC")
+# View(infiltracao)
+# str(infiltracao)
+
+
+haq <- read_excel("UnB_INI_Planilha de trabalho para Stata_16NOV2017.xls",
+                          sheet = "HAQ-287-HGCC")
+# View(haq)
+# str(haq)
+
+icads <- read_excel("UnB_INI_Planilha de trabalho para Stata_16NOV2017.xls",
+                  sheet = "ICADs-287-HGCC")
+# View(icads)
+# str(icads)
+
+
+###########
+# TABELAS #
+###########
+
+
+# Tabelas Pacientes
+
+tabela_sexo <- table(patients$gender)
+tabela_sexo
+prop.table(tabela_sexo)
+
+data_nasc <- as.Date.character(patients$birth_date, format = "%d/%m/%Y")
+today <- Sys.Date()
+today
+
+diff_days <- difftime(today,data_nasc,units = "days")
+diff_days
+
+mean(floor(as.double(diff_days/365.25)))
+median(floor(as.double(diff_days/365.25)))
+
+# Tabelas Demografia
+
+tabela_estado_civil <- table(demografia$marital_status)
+tabela_estado_civil
+prop.table(tabela_estado_civil)
+
+tabela_raca <- table(demografia$race)
+tabela_raca
+prop.table(tabela_raca)
+
+tail(demografia$years_of_study)
+anos_estudo <- as.numeric(demografia$years_of_study)
+sum(is.na(anos_estudo))
+mean(anos_estudo, na.rm = T)
+median(anos_estudo, na.rm = T)
+
+# Tabelas Habitos
+
+tabela_alcool <- table(habitos$alcoholism)
+tabela_alcool
+prop.table(tabela_alcool)
+
+tabela_cigarro <- table(habitos$smoking)
+tabela_cigarro
+prop.table(tabela_cigarro)
+
+tabela_atv_fisica <- table(habitos$physical_activities_frequency)
+tabela_atv_fisica
+prop.table(tabela_atv_fisica)
+
+anos_cigarro <- as.numeric(habitos$years_of_smoking)
+sum(is.na(anos_cigarro))
+mean(anos_cigarro, na.rm = T)
+median(anos_cigarro, na.rm = T)
+
+# Tabelas Caracteristica da Doenca
+
+ano_atual <- 2018
+ano_sintoma <- caract_doenca$simptoms_beginning_year
+# class(ano_sintoma)
+tempo_inicio_sintomas <- ano_atual - ano_sintoma
+mean(tempo_inicio_sintomas)
+median(tempo_inicio_sintomas)
+
+tabela_rheumatoid <- table(caract_doenca$rheumatoid_factor_titration)
+tabela_rheumatoid
+prop.table(tabela_rheumatoid)
+
+tabela_anti_ccp <- table(caract_doenca$anti_ccp_titration)
+tabela_anti_ccp
+prop.table(tabela_anti_ccp)
+
+tabela_erosive_disease <- table(caract_doenca$erosive_disease)
+tabela_erosive_disease
+prop.table(tabela_erosive_disease)
+
+# Tabelas Extra Articular
+
+extra_articular_2 <- extra_articular[ ,3:15]
+  
+lapply(extra_articular_2, table)
+
+# Tabelas Cirurgias
+
+cirurgias_2 <- cirurgias[ ,3:47]
+lapply(cirurgias_2, table)
+
+# Tabelas Infiltracoes
+
+infiltracao_2 <- infiltracao[ ,3:34]
+lapply(infiltracao_2, table)
+
+# Tabelas HAQ
+
+haq_score <- as.numeric(haq$haq_score)
+haq_score <- ifelse(haq_score>1000,haq_score/1000,haq_score*1)  
+
+mean(haq_score)
+median(haq_score)
+
+# Tabelas ICADS
+
+icads_2 <- icads[,c(4,6,8,10)]
+lapply(icads_2, table)
+
+icads_3 <- icads[,c(3,5,7,9)]
+
+# as.numeric(icads_3$das28esr.score)
+# as.numeric(icads_3$das28crp.score)
+# as.numeric(icads_3$sdai.score)
+# as.numeric(icads_3$cdai.score)
+
+mean(as.numeric(icads_3$das28esr.score))
+mean(as.numeric(icads_3$das28crp.score))
+mean(as.numeric(icads_3$sdai.score))
+mean(as.numeric(icads_3$cdai.score))
+
+median(as.numeric(icads_3$das28esr.score))
+median(as.numeric(icads_3$das28crp.score))
+median(as.numeric(icads_3$sdai.score))
+median(as.numeric(icads_3$cdai.score))
+
+################
+# CORRELATIONS #
+################
+
+# a) ABA caracteristicas da doenca, coluna U: positivo alto, positivo baixo, positivo alto + baixo (somados)
+
+correl_1 <- left_join(habitos, caract_doenca, by = c("attendance_id" = "attendance_id"))
+correl_1$rheumatoid_factor_titration
+correl_1$rheumatoid_factor_titration[25] <- NA
+
+correl_1$smoking <- gsub("Ex-UsuÃ¡rio","Fumante",correl_1$smoking)
+correl_1$smoking <- gsub("UsuÃ¡rio","Fumante",correl_1$smoking)
+correl_1$smoking <- gsub("Nunca Utilizado","NÃ£o Fumante",correl_1$smoking)
+correl_1$smoking
+
+table(correl_1$smoking, correl_1$rheumatoid_factor_titration)
+chisq.test(correl_1$smoking, correl_1$rheumatoid_factor_titration)
+fisher.test(correl_1$smoking, correl_1$rheumatoid_factor_titration)
+
+correl_1$rheumatoid_factor_titration <- gsub("Positiva.*","Positiva",correl_1$rheumatoid_factor_titration)
+correl_1$rheumatoid_factor_titration
+
+
+table(correl_1$smoking, correl_1$rheumatoid_factor_titration)
+chisq.test(correl_1$smoking, correl_1$rheumatoid_factor_titration)
+fisher.test(correl_1$smoking, correl_1$rheumatoid_factor_titration)
+
+# b) ABA MANIFESTACAO EXTRA ARTICULAR: alguma positivatem relacao com fumantes e nÃ£o fumantes
+
+correl_2 <- left_join(habitos, extra_articular, by = c("attendance_id" = "attendance_id"))
+
+correl_2$smoking <- gsub("Ex-UsuÃ¡rio","Fumante",correl_2$smoking)
+correl_2$smoking <- gsub("UsuÃ¡rio","Fumante",correl_2$smoking)
+correl_2$smoking <- gsub("Nunca Utilizado","NÃ£o Fumante",correl_2$smoking)
+correl_2$smoking
+
+var <- colnames(extra_articular)[3:15]
+
+for (i in 1:length(var)) {
+
+  base <- cbind(correl_2$smoking, correl_2[ , var[i]])
+  
+  print(table(base))
+}
+
+chisq.test(correl_2$smoking, correl_2$anemia)
+fisher.test(correl_2$smoking, correl_2$anemia)
+
+chisq.test(correl_2$smoking, correl_2$pulmonary_fibrosis)
+fisher.test(correl_2$smoking, correl_2$pulmonary_fibrosis)
+
+chisq.test(correl_2$smoking, correl_2$subcutaneous_nodule)
+fisher.test(correl_2$smoking, correl_2$subcutaneous_nodule)
+
+# c)	ABA HAQ: valores mais altos do HAQ tem relacaoo com tabagismo? 
+
+correl_3 <- left_join(habitos, haq, by = c("attendance_id" = "attendance_id"))
+
+correl_3$smoking <- gsub("Ex-UsuÃ¡rio","Fumante",correl_3$smoking)
+correl_3$smoking <- gsub("UsuÃ¡rio","Fumante",correl_3$smoking)
+correl_3$smoking <- gsub("Nunca Utilizado","NÃ£o Fumante",correl_3$smoking)
+correl_3$smoking
+
+correl_3$haq_score <- as.numeric(correl_3$haq_score)
+correl_3$haq_score <- ifelse(correl_3$haq_score>1000,correl_3$haq_score/1000,correl_3$haq_score*1)  
+correl_3$haq_score
+
+# Teste de normalidade
+shapiro.test(correl_3$haq_score)
+
+# Teste Mann-Whitney
+wilcox.test(haq_score ~ smoking, data = correl_3)
+
+fill <- "#4271AE"
+line <- "#1F3552"
+
+ggplot(correl_3, aes(x = smoking, y = haq_score)) +
+  geom_boxplot(fill = fill, colour = line) +
+  ylab("haq score") +
+  xlab("smoking") +
+  ggtitle("Boxplot - haq score by smoking") +
+  theme_bw() + 
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+# d) ABA ICADS (colunas D a H): tipos de resposta (atividade elevada e atividade moderada) tem relacao com tabagismo?
+
+correl_4 <- left_join(habitos, icads, by = c("attendance_id" = "attendance_id"))
+
+correl_4$smoking <- gsub("Ex-UsuÃ¡rio","Fumante",correl_4$smoking)
+correl_4$smoking <- gsub("UsuÃ¡rio","Fumante",correl_4$smoking)
+correl_4$smoking <- gsub("Nunca Utilizado","NÃ£o Fumante",correl_4$smoking)
+correl_4$smoking
+
+table(correl_4$smoking, correl_4$das28esr.interpretation)
+chisq.test(correl_4$smoking, correl_4$das28esr.interpretation)
+fisher.test(correl_4$smoking, correl_4$das28esr.interpretation)
+
+table(correl_4$smoking, correl_4$das28crp.interpretation)
+chisq.test(correl_4$smoking, correl_4$das28crp.interpretation)
+fisher.test(correl_4$smoking, correl_4$das28crp.interpretation)
+
+table(correl_4$smoking, correl_4$sdai.interpretation)
+chisq.test(correl_4$smoking, correl_4$sdai.interpretation)
+fisher.test(correl_4$smoking, correl_4$sdai.interpretation)
+
+# Teste de normalidade
+shapiro.test(as.numeric(correl_4$das28esr.score))
+shapiro.test(as.numeric(correl_4$das28crp.score))
+shapiro.test(as.numeric(correl_4$sdai.score))
+
+# Teste Mann-Whitney
+wilcox.test(as.numeric(das28esr.score) ~ smoking, data = correl_4)
+wilcox.test(as.numeric(das28crp.score) ~ smoking, data = correl_4)
+wilcox.test(as.numeric(sdai.score) ~ smoking, data = correl_4)
