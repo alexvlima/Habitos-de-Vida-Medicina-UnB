@@ -2,18 +2,12 @@
 # Bibliotecas #
 ###############
 
-
-# install.packages("readxl")
-# install.packages("dplyr")
-# install.packages("ggplot2")
 library(readxl)
-library(dplyr)
-library(ggplot2)
+library(tidyverse)
 
 #######################
 # Importacao do Excel #
 #######################
-
 
 patients <- read_excel("UnB_INI_Planilha de trabalho para Stata_16NOV2017.xls",
                        sheet = "patients-287-HGCC")
@@ -50,7 +44,6 @@ infiltracao <- read_excel("UnB_INI_Planilha de trabalho para Stata_16NOV2017.xls
 # View(infiltracao)
 # str(infiltracao)
 
-
 haq <- read_excel("UnB_INI_Planilha de trabalho para Stata_16NOV2017.xls",
                           sheet = "HAQ-287-HGCC")
 # View(haq)
@@ -61,11 +54,9 @@ icads <- read_excel("UnB_INI_Planilha de trabalho para Stata_16NOV2017.xls",
 # View(icads)
 # str(icads)
 
-
 ###########
 # TABELAS #
 ###########
-
 
 # Tabelas Pacientes
 
@@ -268,7 +259,6 @@ ggplot(correl_3, aes(x = smoking, y = haq_score)) +
   ggtitle("Boxplot - haq score by smoking") +
   theme_bw() + 
   theme(plot.title = element_text(hjust = 0.5))
-
 
 # d) ABA ICADS (colunas D a H): tipos de resposta (atividade elevada e atividade moderada) tem relacao com tabagismo?
 
